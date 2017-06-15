@@ -61,7 +61,7 @@ module.exports = {
     }
 }
 
-function pollAndNotify(){
+function pollAndNotify() {
     var now = new Date();
     var hours = now.getHours();
     var day = now.getDay();
@@ -72,12 +72,16 @@ function pollAndNotify(){
         else{
             // Only execute the poller when it's during working hours
             if (hours >= workStart && hours < workEnd && day != 0 && day != 6) {
-                    Object.keys(pendings).map(function(a){
-                        Slack.notify(a, pendings[a], function(err, done){});
-                    });             
+                Object.keys(pendings).map(function(a){
+                    Slack.notify(a, pendings[a], function(err, done){});
+                });
+                
                 setTimeout(pollAndNotify, interval * 60 * 60 * 1000);
             } else {
                 console.log('All work and no play makes Jack a dull boy.');
+
+                // Polls every 15 min to check if we're back in work hours
+                setTimeout(pollAndNotify, interval * 60 * 7500);
             }
         }
     });
